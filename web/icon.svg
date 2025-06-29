@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="256" cy="256" r="240" fill="#007AFF"/>
+  
+  <!-- 翻译图标 -->
+  <g transform="translate(256,256)">
+    <!-- 语言气泡1 -->
+    <rect x="-80" y="-60" width="120" height="60" rx="20" fill="white" opacity="0.9"/>
+    <text x="-20" y="-25" font-family="Arial, sans-serif" font-size="24" fill="#007AFF" text-anchor="middle">中</text>
+    
+    <!-- 语言气泡2 -->
+    <rect x="-40" y="20" width="120" height="60" rx="20" fill="white" opacity="0.9"/>
+    <text x="20" y="55" font-family="Arial, sans-serif" font-size="24" fill="#007AFF" text-anchor="middle">EN</text>
+    
+    <!-- 连接箭头 -->
+    <path d="M -20 -30 Q 0 0 20 30" stroke="white" stroke-width="4" fill="none" opacity="0.8"/>
+    <path d="M 20 30 Q 0 0 -20 -30" stroke="white" stroke-width="4" fill="none" opacity="0.8"/>
+    
+    <!-- 中心圆点 -->
+    <circle cx="0" cy="0" r="8" fill="white"/>
+  </g>
+  
+  <!-- 装饰元素 -->
+  <circle cx="100" cy="100" r="4" fill="white" opacity="0.6"/>
+  <circle cx="400" cy="120" r="6" fill="white" opacity="0.4"/>
+  <circle cx="80" cy="400" r="5" fill="white" opacity="0.5"/>
+  <circle cx="420" cy="380" r="4" fill="white" opacity="0.6"/>
+</svg> 

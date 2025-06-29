@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻译服务应用 - 静态演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .app-container {
+            width: 375px;
+            height: 667px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .header {
+            height: 60px;
+            background-color: #007AFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            margin-left: 10px;
+        }
+        .btn-primary {
+            background-color: #007AFF;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .tab-bar {
+            height: 60px;
+            background-color: #f8f9fa;
+            display: flex;
+            border-top: 1px solid #e9ecef;
+        }
+        .tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .tab.active {
+            color: #007AFF;
+        }
+        .tab-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        .status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .status-active {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .status-completed {
+            background-color: #6c757d;
+            color: white;
+        }
+        .interpreter-info {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #dee2e6;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .interpreter-details {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>预约列表</h1>
+        </div>
+        
+        <div class="content">
+            <div class="card">
+                <h2>英语商务翻译 <span class="status status-active">进行中</span></h2>
+                <p>日期：2023年11月15日 14:30-15:30</p>
+                <p>翻译语言：中文 → 英文</p>
+                <div class="interpreter-info">
+                    <div class="avatar">JD</div>
+                    <div class="interpreter-details">
+                        <p><strong>John Doe</strong> - 商务翻译专家</p>
+                        <p>评分：⭐⭐⭐⭐⭐ (4.9)</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-primary">开始通话</button>
+                    <button class="btn btn-secondary">重新安排</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>日语技术文档翻译 <span class="status status-pending">待确认</span></h2>
+                <p>日期：2023年11月17日 10:00-11:00</p>
+                <p>翻译语言：中文 → 日文</p>
+                <div class="interpreter-info">
+                    <div class="avatar">TY</div>
+                    <div class="interpreter-details">
+                        <p><strong>田中裕子</strong> - 技术翻译专家</p>
+                        <p>评分：⭐⭐⭐⭐ (4.7)</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary">确认预约</button>
+                    <button class="btn btn-danger">取消</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>法语医疗翻译 <span class="status status-completed">已完成</span></h2>
+                <p>日期：2023年11月10日 09:30-10:30</p>
+                <p>翻译语言：中文 → 法文</p>
+                <div class="interpreter-info">
+                    <div class="avatar">MP</div>
+                    <div class="interpreter-details">
+                        <p><strong>Marie Petit</strong> - 医疗翻译专家</p>
+                        <p>评分：⭐⭐⭐⭐⭐ (5.0)</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary">查看详情</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-bar">
+            <div class="tab">
+                <div class="tab-icon">📞</div>
+                <div>通话</div>
+            </div>
+            <div class="tab active">
+                <div class="tab-icon">📅</div>
+                <div>日历</div>
+            </div>
+            <div class="tab">
+                <div class="tab-icon">📄</div>
+                <div>文档</div>
+            </div>
+            <div class="tab">
+                <div class="tab-icon">👤</div>
+                <div>我的</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

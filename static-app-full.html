@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻译服务应用 - Web版本</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 375px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .screen {
+            display: none;
+            min-height: calc(100vh - 80px);
+            padding-bottom: 80px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .header {
+            background: #007AFF;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            max-width: 100vw;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            height: 80px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 8px;
+        }
+
+        .tab-item.active {
+            color: #007AFF;
+        }
+
+        .tab-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .tab-label {
+            font-size: 12px;
+        }
+
+        .call-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 200px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .video-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .call-controls {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn.mute { background: #34C759; color: white; }
+        .control-btn.video { background: #007AFF; color: white; }
+        .control-btn.end { background: #FF3B30; color: white; }
+
+        .translation-panel {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .appointment-list {
+            padding: 0;
+        }
+
+        .appointment-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #007AFF;
+        }
+
+        .appointment-time {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .appointment-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .appointment-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+
+        .document-list {
+            padding: 0;
+        }
+
+        .document-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .document-icon {
+            width: 48px;
+            height: 48px;
+            background: #FF9500;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .document-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .profile-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: #007AFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-right: 16px;
+        }
+
+        .profile-info h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-icon {
+            width: 24px;
+            font-size: 20px;
+            margin-right: 16px;
+            color: #007AFF;
+        }
+
+        .menu-text {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .menu-arrow {
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .action-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #0056CC;
+        }
+
+        .action-btn.secondary {
+            background: #f8f9fa;
+            color: #007AFF;
+            border: 1px solid #007AFF;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background: #34C759; }
+        .status-busy { background: #FF9500; }
+        .status-offline { background: #8E8E93; }
+
+        .translation-text {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            border-left: 3px solid #007AFF;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #007AFF;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+            z-index: 1000;
+        }
+
+        @media (max-width: 375px) {
+            .app-container {
+                max-width: 100vw;
+            }
+            .tab-bar {
+                width: 100vw;
+                left: 0;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 通话页面 -->
+        <div id="call-screen" class="screen active">
+            <div class="header">视频通话</div>
+            <div class="call-container">
+                <div class="video-container">
+                    <div class="video-icon">👤</div>
+                    <div>远程视频</div>
+                    <div style="font-size: 12px; margin-top: 5px;">Web演示模式</div>
+                </div>
+                
+                <div class="video-container" style="height: 120px;">
+                    <div class="video-icon" style="font-size: 40px;">📹</div>
+                    <div>本地视频</div>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="font-size: 18px; font-weight: 600;">通话时长: 05:23</div>
+                </div>
+
+                <div class="call-controls">
+                    <button class="control-btn mute">🎤</button>
+                    <button class="control-btn video">📹</button>
+                    <button class="control-btn end">📞</button>
+                </div>
+
+                <div class="translation-panel">
+                    <h4 style="margin-bottom: 12px;">实时翻译</h4>
+                    <div class="translation-text">
+                        <strong>您说:</strong> 你好，请问有什么可以帮助您的吗？
+                    </div>
+                    <div class="translation-text">
+                        <strong>翻译:</strong> Hello, is there anything I can help you with?
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 日程页面 -->
+        <div id="calendar-screen" class="screen">
+            <div class="header">预约管理</div>
+            <div class="content">
+                <div class="appointment-list">
+                    <div class="appointment-item">
+                        <div class="appointment-time">今天 14:00 - 15:00</div>
+                        <div class="appointment-title">商务会议翻译</div>
+                        <div class="appointment-status">进行中</div>
+                        <div style="margin-top: 8px; font-size: 14px; color: #666;">
+                            <span class="status-indicator status-online"></span>
+                            翻译员: 张译员
+                        </div>
+                    </div>
+
+                    <div class="appointment-item">
+                        <div class="appointment-time">明天 10:00 - 11:30</div>
+                        <div class="appointment-title">医疗咨询翻译</div>
+                        <div class="appointment-status">已预约</div>
+                        <div style="margin-top: 8px; font-size: 14px; color: #666;">
+                            <span class="status-indicator status-busy"></span>
+                            翻译员: 李译员
+                        </div>
+                    </div>
+
+                    <div class="appointment-item">
+                        <div class="appointment-time">后天 16:30 - 17:30</div>
+                        <div class="appointment-title">法律文件翻译</div>
+                        <div class="appointment-status">待确认</div>
+                        <div style="margin-top: 8px; font-size: 14px; color: #666;">
+                            <span class="status-indicator status-offline"></span>
+                            翻译员: 待分配
+                        </div>
+                    </div>
+                </div>
+
+                <button class="action-btn">预约新的翻译服务</button>
+            </div>
+        </div>
+
+        <!-- 文档页面 -->
+        <div id="document-screen" class="screen">
+            <div class="header">文档翻译</div>
+            <div class="content">
+                <div class="document-list">
+                    <div class="document-item">
+                        <div class="document-icon">📄</div>
+                        <div class="document-info">
+                            <div class="document-name">商务合同.pdf</div>
+                            <div class="document-meta">2.3 MB • 已完成翻译</div>
+                        </div>
+                    </div>
+
+                    <div class="document-item">
+                        <div class="document-icon">📊</div>
+                        <div class="document-info">
+                            <div class="document-name">财务报告.xlsx</div>
+                            <div class="document-meta">1.8 MB • 翻译中...</div>
+                        </div>
+                    </div>
+
+                    <div class="document-item">
+                        <div class="document-icon">📝</div>
+                        <div class="document-info">
+                            <div class="document-name">用户手册.docx</div>
+                            <div class="document-meta">956 KB • 等待翻译</div>
+                        </div>
+                    </div>
+
+                    <div class="document-item">
+                        <div class="document-icon">🖼️</div>
+                        <div class="document-info">
+                            <div class="document-name">产品图册.png</div>
+                            <div class="document-meta">3.2 MB • 已完成翻译</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="action-btn">上传新文档</button>
+                <button class="action-btn secondary">查看翻译历史</button>
+            </div>
+        </div>
+
+        <!-- 个人页面 -->
+        <div id="profile-screen" class="screen">
+            <div class="header">我的</div>
+            <div class="content">
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <div class="profile-avatar">👤</div>
+                        <div class="profile-info">
+                            <h3>用户名</h3>
+                            <p>高级会员 • VIP用户</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <div class="menu-item" onclick="showAlert('账户设置')">
+                        <div class="menu-icon">⚙️</div>
+                        <div class="menu-text">账户设置</div>
+                        <div class="menu-arrow">›</div>
+                    </div>
+                    <div class="menu-item" onclick="showAlert('支付管理')">
+                        <div class="menu-icon">💳</div>
+                        <div class="menu-text">支付管理</div>
+                        <div class="menu-arrow">›</div>
+                    </div>
+                    <div class="menu-item" onclick="showAlert('翻译员管理')">
+                        <div class="menu-icon">👥</div>
+                        <div class="menu-text">翻译员管理</div>
+                        <div class="menu-arrow">›</div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <div class="menu-item" onclick="showAlert('帮助中心')">
+                        <div class="menu-icon">❓</div>
+                        <div class="menu-text">帮助中心</div>
+                        <div class="menu-arrow">›</div>
+                    </div>
+                    <div class="menu-item" onclick="showAlert('意见反馈')">
+                        <div class="menu-icon">💬</div>
+                        <div class="menu-text">意见反馈</div>
+                        <div class="menu-arrow">›</div>
+                    </div>
+                    <div class="menu-item" onclick="showAlert('关于我们')">
+                        <div class="menu-icon">ℹ️</div>
+                        <div class="menu-text">关于我们</div>
+                        <div class="menu-arrow">›</div>
+                    </div>
+                </div>
+
+                <button class="action-btn" style="background: #FF3B30;" onclick="showAlert('退出登录')">
+                    退出登录
+                </button>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <div class="tab-bar">
+            <div class="tab-item active" onclick="switchTab('call')">
+                <div class="tab-icon">📞</div>
+                <div class="tab-label">通话</div>
+            </div>
+            <div class="tab-item" onclick="switchTab('calendar')">
+                <div class="tab-icon">📅</div>
+                <div class="tab-label">日程</div>
+            </div>
+            <div class="tab-item" onclick="switchTab('document')">
+                <div class="tab-icon">📄</div>
+                <div class="tab-label">文档</div>
+            </div>
+            <div class="tab-item" onclick="switchTab('profile')">
+                <div class="tab-icon">👤</div>
+                <div class="tab-label">我的</div>
+            </div>
+        </div>
+
+        <!-- 浮动按钮 -->
+        <button class="floating-btn" onclick="showAlert('快速通话')">📞</button>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // 隐藏所有页面
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            
+            // 移除所有tab的active状态
+            const tabs = document.querySelectorAll('.tab-item');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // 显示选中的页面
+            document.getElementById(tabName + '-screen').classList.add('active');
+            
+            // 激活选中的tab
+            event.currentTarget.classList.add('active');
+        }
+
+        function showAlert(message) {
+            alert('功能演示: ' + message + '\n\n这是Web版本的功能演示，实际功能需要在真实应用中实现。');
+        }
+
+        // 模拟通话控制
+        document.addEventListener('DOMContentLoaded', function() {
+            const controlBtns = document.querySelectorAll('.control-btn');
+            controlBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (btn.classList.contains('mute')) {
+                        showAlert('麦克风已' + (Math.random() > 0.5 ? '静音' : '开启'));
+                    } else if (btn.classList.contains('video')) {
+                        showAlert('摄像头已' + (Math.random() > 0.5 ? '关闭' : '开启'));
+                    } else if (btn.classList.contains('end')) {
+                        showAlert('通话已结束');
+                    }
+                });
+            });
+
+            // 模拟时间更新
+            let callTime = 323; // 5:23 in seconds
+            setInterval(() => {
+                callTime++;
+                const minutes = Math.floor(callTime / 60);
+                const seconds = callTime % 60;
+                const timeDisplay = document.querySelector('.call-container div[style*="font-size: 18px"]');
+                if (timeDisplay) {
+                    timeDisplay.innerHTML = `通话时长: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    
+    <!-- PWA 支持 -->
+    <meta name="theme-color" content="#007AFF" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="翻译服务" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- SEO 优化 -->
+    <meta name="description" content="专业的跨平台口译服务应用，支持视频通话、文档翻译、预约管理等功能" />
+    <meta name="keywords" content="翻译,口译,视频通话,文档翻译,预约管理" />
+    
+    <title>翻译服务应用</title>
+    
+    <!-- PWA 清单 -->
+    <link rel="manifest" href="./manifest.json" />
+    
+    <!-- 图标 -->
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
+    
+    <!-- 字体图标支持 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body, #root {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+        
+        #root {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #007AFF;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            #root {
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <!-- 加载界面 -->
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <h2>翻译服务应用</h2>
+            <p>正在加载中...</p>
+        </div>
+    </div>
+    
+    <!-- PWA 安装提示 -->
+    <script>
+        // PWA 安装提示
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // 显示安装提示
+            const installBanner = document.createElement('div');
+            installBanner.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    background: #007AFF;
+                    color: white;
+                    padding: 12px 20px;
+                    text-align: center;
+                    z-index: 9999;
+                    font-size: 14px;
+                ">
+                    <span>安装翻译服务应用到桌面</span>
+                    <button onclick="installPWA()" style="
+                        background: white;
+                        color: #007AFF;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 4px;
+                        margin-left: 10px;
+                        cursor: pointer;
+                        font-size: 12px;
+                    ">安装</button>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: transparent;
+                        color: white;
+                        border: 1px solid white;
+                        padding: 6px 12px;
+                        border-radius: 4px;
+                        margin-left: 8px;
+                        cursor: pointer;
+                        font-size: 12px;
+                    ">关闭</button>
+                </div>
+            `;
+            document.body.appendChild(installBanner);
+        });
+        
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('用户接受了安装提示');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+        
+        // Service Worker 注册
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('SW 注册成功: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW 注册失败: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html> 
